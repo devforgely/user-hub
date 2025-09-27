@@ -1,16 +1,12 @@
 import {LockOutlined, UserOutlined,} from '@ant-design/icons';
-import {Alert, message, Tabs} from 'antd';
-import React, {useState} from 'react';
+import {message, Tabs} from 'antd';
 import {LoginForm, ProFormText} from '@ant-design/pro-form';
-import {history, useSearchParams} from 'umi';
+import {history} from 'umi';
 import Footer from '@/components/Footer';
 import {register} from '@/services/ant-design-pro/api';
 import styles from './index.less';
 
 const Register: React.FC = () => {
-  const [type, setType] = useState<string>('account');
-  const [searchParams] = useSearchParams();
-
   //提交注册
   const handleSubmit = async (values: API.RegisterParams) => {
 
@@ -31,8 +27,7 @@ const Register: React.FC = () => {
         /** 此方法会跳转到 redirect 参数所在的位置 */
 
         if (!history) return;
-        const redirect = searchParams.get('redirect');
-        history.push('/user/login' + (redirect ? `?redirect=${redirect}` : ''));
+        history.replace('/user/login');
         return;
       }
       else{
@@ -65,7 +60,7 @@ const Register: React.FC = () => {
             await handleSubmit(values as API.RegisterParams);
           }}
         >
-          <Tabs activeKey={type} onChange={setType} centered
+          <Tabs activeKey="account" centered
             items={[
               {
                 key: 'account',
@@ -73,77 +68,73 @@ const Register: React.FC = () => {
               }
             ]}
           />
-
-          {type === 'account' && (
-            <>
-              <ProFormText
-                name="userAccount"
-                fieldProps={{
-                  size: 'large',
-                  prefix: <UserOutlined className={styles.prefixIcon} />,
-                }}
-                placeholder={'Please enter your account'}
-                rules={[
-                  {
-                    required: true,
-                    message: 'Account is required!',
-                  },
-                ]}
-              />
-              <ProFormText.Password
-                name="userPassword"
-                fieldProps={{
-                  size: 'large',
-                  prefix: <LockOutlined className={styles.prefixIcon} />,
-                }}
-                placeholder={'Please enter your password'}
-                rules={[
-                  {
-                    required: true,
-                    message: 'Password is required!',
-                  },
-                  {
-                    min: 8,
-                    type: 'string',
-                    message: 'Password must be at least 8 characters long',
-                  },
-                ]}
-              />
-              <ProFormText.Password
-                name="confirmPassword"
-                fieldProps={{
-                  size: 'large',
-                  prefix: <LockOutlined className={styles.prefixIcon} />,
-                }}
-                placeholder={'Please re-enter your password'}
-                rules={[
-                  {
-                    required: true,
-                    message: 'Password is required!',
-                  },
-                  {
-                    min: 8,
-                    type: 'string',
-                    message: 'Password must be at least 8 characters long',
-                  },
-                ]}
-              />
-              <ProFormText
-                name="planetCode"
-                fieldProps={{
-                  size: 'large',
-                  prefix: <UserOutlined className={styles.prefixIcon} />,
-                }}
-                placeholder={'Please enter your planet code'}
-                rules={[
-                  {
-                    required: true,
-                    message: 'Planet code is required!',
-                  },
-                ]}
-              />
-            </>
-          )}
+         
+          <ProFormText
+            name="userAccount"
+            fieldProps={{
+              size: 'large',
+              prefix: <UserOutlined className={styles.prefixIcon} />,
+            }}
+            placeholder={'Please enter your account'}
+            rules={[
+              {
+                required: true,
+                message: 'Account is required!',
+              },
+            ]}
+          />
+          <ProFormText.Password
+            name="userPassword"
+            fieldProps={{
+              size: 'large',
+              prefix: <LockOutlined className={styles.prefixIcon} />,
+            }}
+            placeholder={'Please enter your password'}
+            rules={[
+              {
+                required: true,
+                message: 'Password is required!',
+              },
+              {
+                min: 8,
+                type: 'string',
+                message: 'Password must be at least 8 characters long',
+              },
+            ]}
+          />
+          <ProFormText.Password
+            name="confirmPassword"
+            fieldProps={{
+              size: 'large',
+              prefix: <LockOutlined className={styles.prefixIcon} />,
+            }}
+            placeholder={'Please re-enter your password'}
+            rules={[
+              {
+                required: true,
+                message: 'Password is required!',
+              },
+              {
+                min: 8,
+                type: 'string',
+                message: 'Password must be at least 8 characters long',
+              },
+            ]}
+          />
+          <ProFormText
+            name="planetCode"
+            fieldProps={{
+              size: 'large',
+              prefix: <UserOutlined className={styles.prefixIcon} />,
+            }}
+            placeholder={'Please enter your planet code'}
+            rules={[
+              {
+                required: true,
+                message: 'Planet code is required!',
+              },
+            ]}
+          />
         </LoginForm>
       </div>
       <Footer />

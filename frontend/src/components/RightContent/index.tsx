@@ -1,29 +1,29 @@
-import { QuestionCircleOutlined } from '@ant-design/icons';
-import '@umijs/max';
+import React from 'react';
+import { useModel } from 'umi';
+import Avatar from './AvatarDropdown';
+import styles from './index.less';
+import { Space } from 'antd';
 export type SiderTheme = 'light' | 'dark';
-export const SelectLang: React.FC = () => {
+
+const GlobalHeaderRight: React.FC = () => {
+  const { initialState } = useModel('@@initialState');
+
+  if (!initialState || !initialState.settings) {
+    return null;
+  }
+
+  const { navTheme, layout } = initialState.settings;
+  let className = styles.right;
+
+  if ((navTheme === 'realDark' && layout === 'top') || layout === 'mix') {
+    className = `${styles.right}  ${styles.dark}`;
+  }
+
   return (
-    <UmiSelectLang
-      style={{
-        padding: 4,
-      }}
-    />
+    <Space className={className}>
+      <Avatar menu={true} />
+    </Space>
   );
 };
-export const Question: React.FC = () => {
-  return (
-    <a
-      href="https://pro.ant.design/docs/getting-started"
-      target="_blank"
-      rel="noreferrer"
-      style={{
-        display: 'inline-flex',
-        padding: '4px',
-        fontSize: '18px',
-        color: 'inherit',
-      }}
-    >
-      <QuestionCircleOutlined />
-    </a>
-  );
-};
+
+export default GlobalHeaderRight;

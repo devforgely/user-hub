@@ -79,6 +79,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
         // Insert Data
         User user = new User();
+        user.setUsername(userAccount);
         user.setUserAccount(userAccount);
         user.setUserPassword(hashedPassword);
         user.setPlanetCode(planetCode);

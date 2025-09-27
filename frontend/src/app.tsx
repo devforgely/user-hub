@@ -7,6 +7,7 @@ import type { RequestConfig, RunTimeLayoutConfig } from '@umijs/max';
 import { history } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
+import RightContent from '@/components/RightContent';
 const isDev = process.env.NODE_ENV === 'development';
 const isDevOrTest = isDev || process.env.CI;
 const loginPath = '/user/login';
@@ -23,10 +24,10 @@ export async function getInitialState(): Promise<{
 }> {
   const fetchUserInfo = async () => {
     try {
-      const msg = await queryCurrentUser({
+      const response = await queryCurrentUser({
         skipErrorHandler: true,
       });
-      return msg;
+      return response.data;
     } catch (_error) {
       history.push(loginPath);
     }
@@ -50,6 +51,8 @@ export async function getInitialState(): Promise<{
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   return {
+    rightContentRender: () => <RightContent />,
+    disableContentMargin: false,
     footerRender: () => <Footer />,
     onPageChange: () => {
       const { location } = history;

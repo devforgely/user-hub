@@ -12,12 +12,12 @@ export default [
     name: 'Admin',
     icon: 'crown',
     access: 'canAdmin',
+    component: './Admin',
     routes: [
-      { path: '/admin', redirect: '/admin/sub-page' },
-      { path: '/admin/sub-page', name: 'Sub-Page', component: './Admin' },
+      { path: '/admin', redirect: '/admin/user-manage' },
+      { path: '/admin/user-manage', name: 'User Management', component: './user-manage' },
     ],
   },
-  { name: 'Search Table', icon: 'table', path: '/list', component: './table-list' },
   { path: '/', redirect: '/welcome' },
   { component: '404', layout: false, path: './*' },
 ];

@@ -1,8 +1,8 @@
 import {LockOutlined, UserOutlined,} from '@ant-design/icons';
-import {Alert, message, Tabs} from 'antd';
+import {Alert, message, Tabs, Typography} from 'antd';
 import React, {useState} from 'react';
 import {LoginForm, ProFormCheckbox, ProFormText} from '@ant-design/pro-form';
-import {history, useModel, useSearchParams} from 'umi';
+import {history, useModel} from 'umi';
 import Footer from '@/components/Footer';
 import {login} from '@/services/ant-design-pro/api';
 import styles from './index.less';
@@ -22,10 +22,8 @@ const LoginMessage: React.FC<{
   );
 };
 const Login: React.FC = () => {
-  const [userLoginState, setUserLoginState] = useState<{status?: string; type?: string}>({});
-  const [type, setType] = useState<string>('account');
+  const [status, setStatus] = useState<boolean>(true);
   const { initialState, setInitialState } = useModel('@@initialState');
-  const [searchParams] = useSearchParams();
 
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
@@ -38,28 +36,28 @@ const Login: React.FC = () => {
   const handleSubmit = async (values: API.LoginParams) => {
     const defaultLoginFailureMessage = 'Login failed, please try again!';
     try {
-      const response = await login({...values, type });
+      const response = await login({...values });
       
       if (response.data) {
         const defaultLoginSuccessMessage = 'Login successful!';
         message.success(defaultLoginSuccessMessage);
         
         await fetchUserInfo();
-        if (!history) return;
-        const redirect = searchParams.get('redirect');
-        history.push(redirect || '/');
+        setTimeout(() => {
+          if (!history) return;
+          history.replace('/');
+        }, 100);
         return;
       }      
       // If fail, show error message
       console.log(response);
-      setUserLoginState(response);
+      setStatus(false);
       message.error(defaultLoginFailureMessage);
     } catch (error) {
       console.log(error);
       message.error(defaultLoginFailureMessage);
     }
   };
-  const { status, type: loginType } = userLoginState;
   return (
     <div className={styles.container}>
       <div className={styles.content}>
@@ -83,7 +81,7 @@ const Login: React.FC = () => {
             await handleSubmit(values as API.LoginParams);
           }}
         >
-          <Tabs activeKey={type} onChange={setType} centered
+          <Tabs activeKey="account" centered
             items={[
               {
                 key: 'account',
@@ -92,41 +90,38 @@ const Login: React.FC = () => {
             ]}
           />
 
-          {status === 'error' && loginType === 'account' && (
+          {status === false && (
             <LoginMessage content={'Incorrect account/password'} />
           )}
-          {type === 'account' && (
-            <>
-              <ProFormText
-                name="userAccount"
-                fieldProps={{
-                  size: 'large',
-                  prefix: <UserOutlined />,
-                }}
-                placeholder={'Account:'}
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please input your account!',
-                  },
-                ]}
-              />
-              <ProFormText.Password
-                name="userPassword"
-                fieldProps={{
-                  size: 'large',
-                  prefix: <LockOutlined />,
-                }}
-                placeholder={'Password:'}
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please input your password!',
-                  },
-                ]}
-              />
-            </>
-          )}
+
+          <ProFormText
+            name="userAccount"
+            fieldProps={{
+              size: 'large',
+              prefix: <UserOutlined />,
+            }}
+            placeholder={'Account:'}
+            rules={[
+              {
+                required: true,
+                message: 'Please input your account!',
+              },
+            ]}
+          />
+          <ProFormText.Password
+            name="userPassword"
+            fieldProps={{
+              size: 'large',
+              prefix: <LockOutlined />,
+            }}
+            placeholder={'Password:'}
+            rules={[
+              {
+                required: true,
+                message: 'Please input your password!',
+              },
+            ]}
+          />
           <div
             style={{
               marginBottom: 24,
@@ -144,9 +139,14 @@ const Login: React.FC = () => {
           </a>
           </div>
         </LoginForm>
-        <div style={{ textAlign: 'center', marginTop: -100 }}>
-          <p>Don't have an account? <a href="/user/register">Register now</a></p>
-        </div>
+        <Typography.Text 
+          style={{ 
+            display: 'block', 
+            textAlign: 'center'
+          }}
+        >
+          Don't have an account? <Typography.Link href="/user/register">Register now</Typography.Link>
+        </Typography.Text>
       </div>
       <Footer />
     </div>
